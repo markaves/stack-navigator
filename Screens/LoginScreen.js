@@ -74,13 +74,15 @@ class  LoginScreen extends Component {
   }
   
   async loginWithFacebook(){
+    const { navigate } = this.props.navigation
     const {type,token} = await Expo.Facebook.logInWithReadPermissionsAsync
     ('283618032166078',{permissions: ['public_profile']})
     if (type == 'success'){
-      const credential = firebase.auth.FaceBookAuthProvider.credential(token)
+      const credential = firebase.auth.FacebookAuthProvider.credential(token)
       firebase.auth().signInWithCredential(credential).catch((error) => {
         console.log(error) 
       })
+      navigate('HomeScreen')
     }
   }
   
