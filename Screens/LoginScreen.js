@@ -28,6 +28,14 @@ class  LoginScreen extends Component {
     })
   }
   
+  componentDidMount(){
+    firebase.auth().onAuthStateChanged((user)=>{
+      if (user != null) {
+        console.log(user)
+      }
+    })
+  }
+  
   signUpUser = (email,password) => {
     try{
      if (this.state.password.length < 6) {
@@ -62,6 +70,17 @@ class  LoginScreen extends Component {
     }
     catch (error) {
       console.log(error.toString())
+    }
+  }
+  
+  async loginWithFacebook(){
+    const {type,token} = await Expo.Facebook.logInWithReadPermissionsAsync
+    ('283618032166078',{permissions: ['public_profile']})
+    if (type == 'success'){
+      const credential = firebase.auth.FaceBookAuthProvider.credential(token)
+      firebase.auth().signInWithCredential(credential).catch((error) => {
+        console.log(error) 
+      })
     }
   }
   
@@ -103,6 +122,16 @@ class  LoginScreen extends Component {
       >
       <Text style={{color: 'white'}}>Signup</Text>
       </Button>
+      
+      <Button style={{marginTop:10}}
+        full
+        rounded
+        primary
+        onPress={()=> this.loginWithFacebook()}
+      >
+      <Text style={{color: 'white'}}>Login With Facebook</Text>
+      </Button>
+      
       </Form>
       </Container>
     );
